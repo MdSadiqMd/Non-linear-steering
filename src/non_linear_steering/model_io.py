@@ -76,34 +76,3 @@ def preflight_report(model_path: str | Path) -> tuple[bool, list[str]]:
     ok = tokenizer_ok and bool(weights)
     messages.append("status: OK" if ok else "status: NOT TRAINABLE YET")
     return ok, messages
-
-
-def load_tokenizer(model_path: str | Path):
-    from transformers import AutoTokenizer
-
-    if _is_hf_model_name(model_path):
-        return AutoTokenizer.from_pretrained(str(model_path))
-    snapshot = resolve_snapshot(model_path)
-    return AutoTokenizer.from_pretrained(snapshot, local_files_only=True)
-
-
-def load_causal_lm(model_path: str | Path, *, dtype: str = "auto", device_map: str = "auto"):
-    import torch
-    from transformers import AutoModelForCausalLM
-
-    torch_dtype = "auto" if dtype == "auto" else getattr(torch, dtype)
-    if _is_hf_model_name(model_path):
-        return AutoModelForCausalLM.from_pretrained(
-            str(model_path),
-            torch_dtype=torch_dtype,
-            device_map=device_map,
-            trust_remote_code=True,
-        )
-    snapshot = resolve_snapshot(model_path)
-    return AutoModelForCausalLM.from_pretrained(
-        snapshot,
-        local_files_only=True,
-        torch_dtype=torch_dtype,
-        device_map=device_map,
-        trust_remote_code=True,
-    )
