@@ -1,6 +1,5 @@
-def main():
-    print("Hello from non-linear-steering!")
+from non_linear_steering.cli import main
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
