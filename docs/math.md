@@ -7,8 +7,7 @@ implementation therefore uses two passes:
 2. **Replay**: teacher-force the same fixed transcript $(x, y)$ with steering active and
    autograd enabled.
 
-For a fixed sampled transcript, both terms are differentiable in the steering parameters
-$\theta$:
+For a fixed sampled transcript, both terms are differentiable in the steering parameters $\theta$:
 
 $$
 S_\theta(x, y), \qquad \log q_\theta(y | x) = \sum_t \log q_\theta(y_t | x, y_{<t})
@@ -33,8 +32,7 @@ the intervention sits downstream, the probe never sees the steered residuals for
 sequence and its score is constant in $\theta$, so only the second term trains.
 
 The second term is the **behavior path** (score-function / REINFORCE). It accounts for changing
-which discrete completion is sampled. The coefficient $S_\theta$ is detached: the derivative of
-$S_\theta \log q_\theta$ with respect to $\theta$ already counts the direct term, and counting it
+which discrete completion is sampled. The coefficient $S_\theta$ is detached: the derivative of $S_\theta \log q_\theta$ with respect to $\theta$ already counts the direct term, and counting it
 again would double it.
 
 ## Forward KL Constraint
@@ -83,8 +81,7 @@ $$
 \end{aligned}
 $$
 
-The `stopgrad` (detach) is essential: without it, the direct derivatives of $S_\theta$ and
-$C_\theta$ are counted a second time through the policy coefficient.
+The `stopgrad` (detach) is essential: without it, the direct derivatives of $S_\theta$ and $C_\theta$ are counted a second time through the policy coefficient.
 
 The baseline must be independent of the current sample's action given the prompt. A moving
 average from previous batches or a learned value $b(x)$ is valid. The current batch mean is
